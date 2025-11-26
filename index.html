@@ -163,7 +163,7 @@
   function getFileName(emo) {
     const mode = document.querySelector('input[name="mode"]:checked').value;
     const name = nameInput.value.trim() || "____";
-    if (mode === "user") return `user-${name}-${emo}.png`;
+    if (mode === "user") return `user-${name}_${emo}.png`;
     return `${name}-${emo}.png`;
   }
 
