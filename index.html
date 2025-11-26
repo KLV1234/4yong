@@ -216,6 +216,56 @@
   document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", render));
 
   render();
+// --- ZIP 다운로드 기능 추가 ---
+  document.getElementById("makeZip").addEventListener("click", async () => {
+    const zip = new JSZip();
+
+    const items = document.querySelectorAll('.dropzone');
+
+    for (let dz of items) {
+      const bg = dz.style.backgroundImage;
+      if (!bg || bg === "none") continue;
+
+      const url = bg.slice(5, -2);
+      const res = await fetch(url);
+      const blob = await res.blob();
+
+      const emoIndex = dz.dataset.index;
+      const emoName = emotions[emoIndex];
+      const fileName = getFileName(emoName);
+
+      zip.file(fileName, blob);
+    }
+
+    const content = await zip.generateAsync({ type: "blob" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(content);
+    a.download = "emotions.zip";
+    a.click();
+  });
+
+  // --- 자동 다운로드 (이미지 개별 다운로드) ---
+  document.getElementById("autoDownload").addEventListener("click", async () => {
+    const items = document.querySelectorAll('.dropzone');
+
+    for (let dz of items) {
+      const bg = dz.style.backgroundImage;
+      if (!bg || bg === "none") continue;
+
+      const url = bg.slice(5, -2);
+      const res = await fetch(url);
+      const blob = await res.blob();
+
+      const emoIndex = dz.dataset.index;
+      const emoName = emotions[emoIndex];
+      const fileName = getFileName(emoName);
+
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      a.click();
+    }
+  });
 </script>
 </body>
 </html>
